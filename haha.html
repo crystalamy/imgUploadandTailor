@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<script> 
+var picPath; 
+var image; 
+// preview picture 
+function preview(){ 
+     document.getElementById('aPic').src =  picPath;
+     document.getElementById('aPic').style.display = '';
+ } 
+ function loadImage(img) { 
+   var exp = /.jpg$|.gif$|.png$|.bmp$/;
+  if(exp.exec(img.value)==null){
+   alert('图片格式不正确');
+   img.outerHTML=img.outerHTML;//清空
+   return false;
+  } 
+     picPath   = getPath(img); 
+     preview();
+     showSize();
+ } 
+ function getFileSize() {
+      var o=document.getElementById('pic');
+      x = window.XMLHttpRequest ? new window.XMLHttpRequest : new ActiveXObject("MSxml2.XMLHTTP");
+      x.open("HEAD", o.src, false);
+      x.send();
+      alert("大小：" + (x.getResponseHeader("Content-Length")/1000) + 'kb');
+    }
+ 
+ function getPath(img){ 
+     if(img){ 
+         //ie 
+         if (window.navigator.userAgent.indexOf("MSIE")>=1){ 
+          
+       img.select();
+             // IE下取得图片的本地路径 
+             return document.selection.createRange().text; 
+         } 
+         //firefox 
+         else if(window.navigator.userAgent.indexOf("Firefox")>=1){ 
+             if(img.files){ 
+                 //Firefox下取得的是图片的数据,火狐7.0不支持getAsDataURL
+                 //return obj.files.item(0).getAsDataURL(); 
+                 //alert(window.URL.createObjectURL(img.files[0]).fileSize); //无效
+                 return window.URL.createObjectURL(img.files[0]);
+             } 
+             return img.value; 
+         } 
+         return img.value; 
+     } 
+ }
+ //对于IE和FF分别处理
+ function showSize(){
+   if (window.navigator.userAgent.indexOf("MSIE")>=1){
+      image = new Image(); 
+        image.src = picPath;
+        image.dynsrc = picPath;
+        alert('大小:'+image.fileSize/1000+'kb');
+    }
+    else if(window.navigator.userAgent.indexOf("Firefox")>=1){
+      getFileSize();
+    }
+ } 
+ </script> 
+ </head> 
+  <body style="text-align:center"> 
+   上传头像:<input type="file" name="pic" id="pic" onchange='loadImage(this);'/><br/>
+   <div id='box'>
+    头像预览:<img src="" id='aPic' style="display:none" width="100px" height="100px"/>
+   </div> 
+  </body> 
+ </html>
